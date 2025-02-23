@@ -23,7 +23,6 @@ services:
     networks:
       - manufacturing_network
 
-  # Kafka Broker
   kafka:
     image: confluentinc/cp-kafka:latest
     container_name: kafka
@@ -34,11 +33,13 @@ services:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     depends_on:
       - zookeeper
     networks:
       - manufacturing_network
+
 
   # Spark Standalone Cluster
   spark-master:
