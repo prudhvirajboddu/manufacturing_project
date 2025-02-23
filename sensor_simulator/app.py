@@ -41,4 +41,4 @@ while True:
     data = generate_sensor_data()
     producer.send(KAFKA_TOPIC, data)
     logging.info(f"📡 Sent: {data}")
-    time.sleep(1)
+    time.sleep(5)
