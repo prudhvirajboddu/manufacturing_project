@@ -73,6 +73,17 @@ services:
     networks:
       - manufacturing_network
 
+  #Python streaming process of the data simulated this is where it all starts from
+  spark-streaming:
+    build: ./spark_streaming
+    container_name: spark-streaming
+    depends_on:
+      - kafka
+      - mongodb
+    networks:
+      - manufacturing_network
+
+
   # # Python Service: Machine Learning API
   # ml-api:
   #   build: ./ml_api
