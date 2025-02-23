@@ -43,7 +43,7 @@ print(parsed_df)
 #  Function to Write to MongoDB
 def write_to_mongo(batch_df, batch_id):
     try:
-        logging.info(f"💾 Writing Batch {batch_id} to MongoDB...")
+        logging.info(f" Writing Batch {batch_id} to MongoDB...")
         records = batch_df.toPandas().to_dict(orient="records")
         client = MongoClient("mongodb://mongodb:27017/")
         db = client["manufacturing"]
@@ -51,7 +51,7 @@ def write_to_mongo(batch_df, batch_id):
         collection.insert_many(records)
         logging.info(f" Successfully Written {len(records)} Records to MongoDB for Batch {batch_id}!")
     except Exception as e:
-        logging.error(f"❌ Error Writing to MongoDB: {e}")
+        logging.error(f"Error Writing to MongoDB: {e}")
 
 #  Start Streaming Query
 query = parsed_df.writeStream \
