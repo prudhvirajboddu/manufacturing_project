@@ -1,19 +1,17 @@
 version: "3.8"
 
 services:
-  # 🟢 MongoDB for storing sensor data
+  # ✅ MongoDB for storing sensor data
   mongodb:
     image: mongo:6.0
     container_name: mongodb
     restart: always
     ports:
       - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
     networks:
       - manufacturing_network
 
-  # 🟡 Zookeeper (Required for Kafka)
+  # ✅ Zookeeper (Required for Kafka)
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
     container_name: zookeeper
@@ -23,7 +21,7 @@ services:
     networks:
       - manufacturing_network
 
-  # 🔴 Kafka Broker (Message Queue)
+  # ✅ Kafka Broker (Message Queue)
   kafka:
     image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
@@ -41,31 +39,28 @@ services:
     networks:
       - manufacturing_network
 
-  # 🔵 Spark Standalone Master
+  # ✅ Apache Spark Master (Official Image)
   spark-master:
-    image: bitnami/spark:3.5.0
+    image: apache/spark:3.5.0
     container_name: spark-master
+    command: bin/spark-class org.apache.spark.deploy.master.Master
     ports:
       - "7077:7077"
       - "8080:8080"
-    environment:
-      - SPARK_MODE=master
     networks:
       - manufacturing_network
 
-  # 🔵 Spark Worker
+  # ✅ Apache Spark Worker (Official Image)
   spark-worker:
-    image: bitnami/spark:3.5.0
+    image: apache/spark:3.5.0
     container_name: spark-worker
+    command: bin/spark-class org.apache.spark.deploy.worker.Worker spark://spark-master:7077
     depends_on:
       - spark-master
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
     networks:
       - manufacturing_network
 
-  # 🟠 Python Sensor Data Generator
+  # ✅ Sensor Data Generator (Sends data to Kafka)
   sensor-data-generator:
     build: ./sensor_simulator
     container_name: sensor-generator
@@ -74,7 +69,7 @@ services:
     networks:
       - manufacturing_network
 
-  # 🟣 Spark Streaming Consumer (Kafka → MongoDB)
+  # ✅ Spark Streaming Consumer (Kafka → MongoDB)
   spark-streaming:
     build: ./spark_streaming
     container_name: spark-streaming
@@ -82,12 +77,9 @@ services:
       - kafka
       - mongodb
     environment:
-      - PYSPARK_SUBMIT_ARGS=--jars /opt/bitnami/spark/jars/spark-sql-kafka-0-10_2.12-3.5.0.jar,/opt/bitnami/spark/jars/kafka-clients-3.5.0.jar pyspark-shell
+      - PYSPARK_SUBMIT_ARGS=--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 pyspark-shell
     networks:
       - manufacturing_network
-
-volumes:
-  mongodb_data:
 
 networks:
   manufacturing_network:

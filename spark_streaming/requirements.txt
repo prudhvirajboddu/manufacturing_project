@@ -1,3 +1,2 @@
-pyspark
 kafka-python
 pymongo
