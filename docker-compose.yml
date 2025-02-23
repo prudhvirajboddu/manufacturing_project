@@ -82,7 +82,7 @@ services:
       - kafka
       - mongodb
     environment:
-      - PYSPARK_SUBMIT_ARGS=--packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.0 pyspark-shell
+      - PYSPARK_SUBMIT_ARGS=--jars /opt/bitnami/spark/jars/spark-sql-kafka-0-10_2.12-3.5.0.jar,/opt/bitnami/spark/jars/kafka-clients-3.5.0.jar pyspark-shell
     networks:
       - manufacturing_network
 
