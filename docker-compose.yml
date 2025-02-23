@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - manufacturing_network
+
+  # Zookeeper (Required for Kafka)
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    container_name: zookeeper
+    restart: always
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - manufacturing_network
+
+  # Kafka Broker
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    restart: always
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: "zookeeper:2181"
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    depends_on:
+      - zookeeper
+    networks:
+      - manufacturing_network
+
+  # Spark Standalone Cluster
+  spark-master:
+    image: bitnami/spark:latest
+    container_name: spark-master
+    ports:
+      - "7077:7077"
+      - "8080:8080"
+    environment:
+      - SPARK_MODE=master
+    networks:
+      - manufacturing_network
+
+  spark-worker:
+    image: bitnami/spark:latest
+    container_name: spark-worker
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    networks:
+      - manufacturing_network
+
+  # Python Service: Sensor Data Generator
+  sensor-data-generator:
+    build: ./sensor_simulator
+    container_name: sensor-generator
+    depends_on:
+      - kafka
+    networks:
+      - manufacturing_network
+
+  # # Python Service: Machine Learning API
+  # ml-api:
+  #   build: ./ml_api
+  #   container_name: ml-api
+  #   ports:
+  #     - "5000:5000"
+  #   depends_on:
+  #     - mongodb
+  #   networks:
+  #     - manufacturing_network
+
+  # # Grafana for Monitoring (Optional)
+  # grafana:
+  #   image: grafana/grafana:latest
+  #   container_name: grafana
+  #   ports:
+  #     - "3000:3000"
+  #   networks:
+  #     - manufacturing_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  manufacturing_network:
+    driver: bridge
