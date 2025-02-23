@@ -38,6 +38,8 @@ df = (
 # ✅ Parse JSON Data from Kafka
 parsed_df = df.select(from_json(df.value.cast("string"), schema).alias("data")).select("data.*")
 
+print(parsed_df)
+
 # ✅ Function to Write to MongoDB
 def write_to_mongo(batch_df, batch_id):
     try:
