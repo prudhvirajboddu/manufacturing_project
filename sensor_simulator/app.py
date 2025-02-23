@@ -18,10 +18,10 @@ def create_kafka_producer():
                 bootstrap_servers=KAFKA_SERVER,
                 value_serializer=lambda v: json.dumps(v).encode("utf-8"),
             )
-            logging.info("✅ Connected to Kafka successfully!")
+            logging.info("Connected to Kafka successfully!")
             return producer
         except Exception as e:
-            logging.error(f"❌ Kafka connection failed: {e}. Retrying in 5 seconds...")
+            logging.error(f" Kafka connection failed: {e}. Retrying in 5 seconds...")
             time.sleep(5)
     raise Exception("Kafka connection failed after multiple attempts")
 
@@ -40,5 +40,5 @@ def generate_sensor_data():
 while True:
     data = generate_sensor_data()
     producer.send(KAFKA_TOPIC, data)
-    logging.info(f"📡 Sent: {data}")
+    logging.info(f" Sent: {data}")
     time.sleep(5)

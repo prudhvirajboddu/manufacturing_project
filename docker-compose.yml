@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  # ✅ MongoDB for storing sensor data
+  #  MongoDB for storing sensor data
   mongodb:
     image: mongo:6.0
     container_name: mongodb
@@ -11,7 +11,7 @@ services:
     networks:
       - manufacturing_network
 
-  # ✅ Zookeeper (Required for Kafka)
+  #  Zookeeper (Required for Kafka)
   zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
     container_name: zookeeper
@@ -21,7 +21,7 @@ services:
     networks:
       - manufacturing_network
 
-  # ✅ Kafka Broker (Message Queue)
+  #  Kafka Broker (Message Queue)
   kafka:
     image: confluentinc/cp-kafka:7.4.0
     container_name: kafka
@@ -39,7 +39,7 @@ services:
     networks:
       - manufacturing_network
 
-  # ✅ Apache Spark Master
+  #  Apache Spark Master
   spark-master:
     image: apache/spark:3.5.0
     container_name: spark-master
@@ -50,7 +50,7 @@ services:
     networks:
       - manufacturing_network
 
-  # ✅ Apache Spark Worker
+  #  Apache Spark Worker
   spark-worker:
     image: apache/spark:3.5.0
     container_name: spark-worker
@@ -60,7 +60,7 @@ services:
     networks:
       - manufacturing_network
 
-  # ✅ Sensor Data Generator (Sends data to Kafka)
+  #  Sensor Data Generator (Sends data to Kafka)
   sensor-data-generator:
     build: ./sensor_simulator
     container_name: sensor-generator
@@ -69,7 +69,7 @@ services:
     networks:
       - manufacturing_network
 
-  # ✅ Spark Streaming Consumer (Kafka → MongoDB)
+  #  Spark Streaming Consumer (Kafka → MongoDB)
   spark-streaming:
     build: ./spark_streaming
     container_name: spark-streaming
