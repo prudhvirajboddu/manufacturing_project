@@ -1,6 +1,6 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import from_json, col
-from pyspark.sql.types import StructType, StringType, DoubleType, IntegerType
+from pyspark.sql.types import StructType, StructField, StringType, DoubleType, IntegerType
 from pymongo import MongoClient
 
 # MongoDB Connection
@@ -11,15 +11,17 @@ collection = db["sensor_data"]
 # Spark Session
 spark = SparkSession.builder.appName("KafkaStreaming").getOrCreate()
 
-# Define Schema
+
+
 schema = StructType([
-    ("timestamp", StringType()),
-    ("machine_id", StringType()),
-    ("temperature", DoubleType()),
-    ("vibration", DoubleType()),
-    ("pressure", DoubleType()),
-    ("error_code", IntegerType())
+    StructField("timestamp", StringType(), True),
+    StructField("machine_id", StringType(), True),
+    StructField("temperature", DoubleType(), True),
+    StructField("vibration", DoubleType(), True),
+    StructField("pressure", DoubleType(), True),
+    StructField("error_code", IntegerType(), True)
 ])
+
 
 # Read from Kafka
 df = (
