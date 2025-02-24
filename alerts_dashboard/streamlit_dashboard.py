@@ -6,7 +6,7 @@ import plotly.express as px
 import uuid  # To generate unique keys
 
 # MongoDB connection details
-MONGO_URI = "mongodb://localhost:27017"
+MONGO_URI = "mongodb://mongodb:27017"
 DATABASE_NAME = "manufacturing"
 COLLECTION_NAME = "sensor_data"
 
