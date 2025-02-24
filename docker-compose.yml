@@ -81,6 +81,17 @@ services:
     networks:
       - manufacturing_network
 
+  streamlit-dashboard:
+    build: ./alerts_dashboard
+    container_name: streamlit-dashboard
+    restart: always
+    ports:
+      - "8501:8501"
+    depends_on:
+      - mongodb
+    networks:
+      - manufacturing_network
+
 networks:
   manufacturing_network:
     driver: bridge
