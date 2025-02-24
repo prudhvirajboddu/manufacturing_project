@@ -2,7 +2,7 @@ import streamlit as st
 import requests
 import time
 
-FLASK_API_URL = "http://flask-api:5000/alerts"
+FLASK_API_URL = "http://backend:5000/alerts"
 
 st.title("Factory Real-Time Alert Dashboard")
 
